@@ -4,1112 +4,938 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ROI-OPS™ — Diagnóstico de Escala em 5 Dias</title>
-  <meta name="description" content="Sua agência mede tudo. Menos ela mesma. Descubra onde estão seus R$8.000–R$25.000/mês em perdas operacionais em 5 dias.">
+  <meta name="description" content="Sua agência mede tudo. Menos ela mesma. Descubra onde estão seus R$8.000–R$25.000/mês em perdas operacionais.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    /* ========== RESET & BASE ========== */
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      font-size: 16px;
-    }
-
+    /* ══════════════════════════════════════════
+       RESET & BASE
+    ══════════════════════════════════════════ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #0a0a0a;
+      background: #0A0F1E;
       color: #e5e5e5;
       line-height: 1.7;
       overflow-x: hidden;
+      cursor: none;
     }
 
-    /* ========== VARIABLES ========== */
+    /* ══════════════════════════════════════════
+       CUSTOM CURSOR
+    ══════════════════════════════════════════ */
+    .cursor-dot {
+      width: 10px; height: 10px;
+      background: #1C71E1;
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 99999;
+      transition: transform 0.15s cubic-bezier(0.4,0,0.2,1);
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(28,113,225,0.5);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 99998;
+      transition: transform 0.08s cubic-bezier(0.4,0,0.2,1), width 0.3s, height 0.3s, border-color 0.3s;
+    }
+    .cursor-hover .cursor-ring {
+      width: 50px; height: 50px;
+      border-color: rgba(28,113,225,0.9);
+    }
+
+    @media (pointer: coarse) {
+      body { cursor: auto; }
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+
+    /* ══════════════════════════════════════════
+       VARIABLES
+    ══════════════════════════════════════════ */
     :root {
-      --accent: #F59E0B;
-      --accent-hover: #D97706;
-      --bg-primary: #0a0a0a;
-      --bg-card: #111111;
-      --bg-card-hover: #161616;
-      --border-subtle: #1f1f1f;
-      --border-medium: #2a2a2a;
-      --text-primary: #ffffff;
-      --text-secondary: #a3a3a3;
-      --text-muted: #737373;
-      --max-width: 1200px;
-      --section-padding: clamp(80px, 10vw, 140px);
+      --blue: #1C71E1;
+      --blue-hover: #3B8EF0;
+      --bg-primary: #0A0F1E;
+      --bg-alt: #111827;
+      --white: #FFFFFF;
+      --text-sec: #8A9BB0;
+      --border: #1E3A5F;
+      --green: #10B981;
+      --red: #EF4444;
+      --max-w: 1200px;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --section-py: clamp(80px, 10vw, 140px);
     }
 
-    /* ========== UTILITIES ========== */
-    .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 0 24px;
-    }
+    /* ══════════════════════════════════════════
+       UTILITIES
+    ══════════════════════════════════════════ */
+    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+    .accent { color: var(--blue); }
+    .mono { font-family: 'JetBrains Mono', monospace; }
 
-    .accent {
-      color: var(--accent);
-    }
-
-    .fade-in {
+    /* fade + slide */
+    .reveal {
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+      transform: translateY(40px);
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
     }
-
-    .fade-in.visible {
+    .reveal.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    /* ========== NAVBAR ========== */
+    /* ══════════════════════════════════════════
+       NAVBAR
+    ══════════════════════════════════════════ */
     .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
       padding: 16px 0;
-      background: rgba(10, 10, 10, 0.8);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border-subtle);
-      transition: padding 0.3s ease;
+      background: rgba(10,15,30,0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(30,58,95,0.4);
+      transition: padding 0.3s var(--ease);
+    }
+    .navbar.scrolled { padding: 10px 0; }
+    .navbar .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700; font-size: 1.5rem;
+      text-decoration: none; letter-spacing: -0.5px;
+    }
+    .logo .roi { color: var(--blue); font-weight: 700; }
+    .logo .ops { color: var(--white); font-weight: 700; }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 24px;
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      font-size: 0.875rem; font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s var(--ease);
+      animation: cta-pulse 2.5s infinite;
+    }
+    .nav-cta:hover {
+      background: var(--blue-hover);
+      transform: scale(1.03);
+      box-shadow: 0 0 24px rgba(28,113,225,0.5);
+    }
+    .nav-cta .arrow { transition: transform 0.3s var(--ease); }
+    .nav-cta:hover .arrow { transform: translateX(4px); }
+
+    @keyframes cta-pulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(28,113,225,0.3); }
+      50% { box-shadow: 0 0 20px rgba(28,113,225,0.55); }
     }
 
-    .navbar.scrolled {
-      padding: 12px 0;
-    }
-
-    .navbar .container {
+    /* ══════════════════════════════════════════
+       HERO
+    ══════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      padding: 160px 0 var(--section-py);
+      overflow: hidden;
+      min-height: 100vh;
       display: flex;
       align-items: center;
-      justify-content: space-between;
     }
 
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.4rem;
-      color: var(--text-primary);
-      text-decoration: none;
-      letter-spacing: -0.5px;
+    /* dot grid */
+    .hero-grid {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .hero-grid canvas {
+      width: 100%; height: 100%;
+      opacity: 0.35;
     }
 
-    .logo span {
-      color: var(--accent);
-    }
-
-    .nav-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 24px;
-      background: transparent;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .nav-cta:hover {
-      background: var(--accent);
-      color: #000;
-    }
-
-    /* ========== HERO ========== */
-    .hero {
-      padding-top: 160px;
-      padding-bottom: var(--section-padding);
-      position: relative;
-    }
-
-    .hero::before {
-      content: '';
+    .hero-glow {
       position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(245, 158, 11, 0.06) 0%, transparent 70%);
+      top: -100px; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(28,113,225,0.1) 0%, transparent 70%);
       pointer-events: none;
     }
 
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      background: rgba(245, 158, 11, 0.08);
-      border: 1px solid rgba(245, 158, 11, 0.2);
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 18px;
+      background: rgba(28,113,225,0.1);
+      border: 1px solid rgba(28,113,225,0.3);
       border-radius: 100px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 32px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
+      font-size: 0.8rem; font-weight: 600;
+      color: var(--blue); margin-bottom: 32px;
+      letter-spacing: 0.5px; text-transform: uppercase;
     }
-
     .hero-badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
+      content: ''; width: 6px; height: 6px;
+      background: var(--blue); border-radius: 50%;
       animation: pulse-dot 2s infinite;
     }
-
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
+    @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
     .hero h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      font-weight: 800;
-      line-height: 1.08;
-      color: var(--text-primary);
-      margin-bottom: 24px;
-      letter-spacing: -2px;
-      max-width: 800px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.8rem);
+      font-weight: 700; line-height: 1.08;
+      color: var(--white); margin-bottom: 24px;
+      letter-spacing: -2px; max-width: 820px;
+      position: relative;
     }
+    .hero h1 .typing-cursor {
+      display: inline-block; width: 3px; height: 0.85em;
+      background: var(--blue); margin-left: 4px;
+      vertical-align: text-bottom;
+      animation: blink-cursor 1s step-end infinite;
+    }
+    @keyframes blink-cursor { 0%,100%{opacity:1} 50%{opacity:0} }
 
     .hero-sub {
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      color: var(--text-secondary);
-      max-width: 640px;
-      margin-bottom: 16px;
-      line-height: 1.7;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-sec); max-width: 620px;
+      margin-bottom: 16px; line-height: 1.7;
     }
-
     .hero-highlight {
-      font-size: clamp(1.05rem, 2vw, 1.2rem);
-      color: var(--text-primary);
-      max-width: 700px;
-      margin-bottom: 20px;
-      font-weight: 500;
-      line-height: 1.7;
+      font-size: clamp(1.05rem, 2vw, 1.15rem);
+      color: var(--white); max-width: 680px;
+      margin-bottom: 20px; font-weight: 500;
     }
-
     .hero-guarantee {
-      font-size: 0.95rem;
-      color: var(--accent);
-      margin-bottom: 40px;
-      font-weight: 500;
+      font-size: 0.95rem; color: var(--green);
+      margin-bottom: 40px; font-weight: 500;
     }
-
-    .hero-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      align-items: center;
-    }
+    .hero-buttons { display: flex; flex-wrap: wrap; gap: 16px; }
 
     .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 16px 32px;
-      background: var(--accent);
-      color: #000;
-      font-size: 1rem;
-      font-weight: 700;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 36px;
+      background: var(--blue); color: var(--white);
+      font-size: 1rem; font-weight: 700;
+      border: none; border-radius: 10px;
+      text-decoration: none; cursor: none;
+      transition: all 0.3s var(--ease);
+      animation: cta-pulse 2.5s infinite;
     }
-
     .btn-primary:hover {
-      background: var(--accent-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(245, 158, 11, 0.25);
+      background: var(--blue-hover);
+      transform: scale(1.03);
+      box-shadow: 0 0 30px rgba(28,113,225,0.5);
     }
+    .btn-primary:hover .arrow { transform: translateX(4px); }
 
     .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 16px 32px;
-      background: transparent;
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      font-weight: 500;
-      border: 1px solid var(--border-medium);
-      border-radius: 8px;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 32px; background: transparent;
+      color: var(--text-sec); font-size: 0.95rem; font-weight: 500;
+      border: 1px solid var(--border); border-radius: 10px;
+      text-decoration: none; cursor: none;
+      transition: all 0.3s var(--ease);
     }
-
     .btn-secondary:hover {
-      border-color: var(--text-secondary);
-      color: var(--text-primary);
+      border-color: var(--blue);
+      color: var(--white);
+      box-shadow: 0 0 16px rgba(28,113,225,0.2);
     }
+    .arrow { transition: transform 0.3s var(--ease); }
 
-    .btn-arrow {
-      transition: transform 0.3s ease;
-    }
-
-    .btn-primary:hover .btn-arrow,
-    .btn-secondary:hover .btn-arrow {
-      transform: translateX(4px);
-    }
-
-    /* ========== SECTION TITLES ========== */
+    /* ══════════════════════════════════════════
+       SECTION COMMON
+    ══════════════════════════════════════════ */
     .section-label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 16px;
+      font-size: 0.8rem; font-weight: 600;
+      color: var(--blue); text-transform: uppercase;
+      letter-spacing: 2px; margin-bottom: 12px;
     }
-
     .section-title {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 800;
-      color: var(--text-primary);
-      line-height: 1.15;
-      letter-spacing: -1.5px;
-      margin-bottom: 24px;
+      font-weight: 700; color: var(--white);
+      line-height: 1.15; letter-spacing: -1.5px;
+      margin-bottom: 20px;
     }
 
-    /* ========== PAIN SECTION ========== */
-    .pain-section {
-      padding: var(--section-padding) 0;
-      border-top: 1px solid var(--border-subtle);
+    /* ══════════════════════════════════════════
+       NUMBERS SECTION
+    ══════════════════════════════════════════ */
+    .numbers-section {
+      padding: var(--section-py) 0;
+      background: var(--bg-alt);
     }
-
-    .pain-content {
-      max-width: 720px;
-    }
-
-    .pain-content p {
-      font-size: 1.05rem;
-      color: var(--text-secondary);
-      margin-bottom: 24px;
-      line-height: 1.8;
-    }
-
-    .pain-content p strong {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-
-    .pain-pullquote {
-      font-size: clamp(1.3rem, 3vw, 1.6rem);
-      font-weight: 700;
-      color: var(--text-primary);
-      border-left: 3px solid var(--accent);
-      padding-left: 24px;
-      margin: 48px 0;
-      line-height: 1.5;
-    }
-
-    .pain-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 24px;
-      margin: 48px 0;
-    }
-
-    .pain-stat {
-      padding: 24px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-    }
-
-    .pain-stat-value {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 8px;
-    }
-
-    .pain-stat-label {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    .pain-divider {
-      width: 60px;
-      height: 2px;
-      background: var(--border-medium);
-      margin: 48px 0;
-    }
-
-    /* ========== HOW IT WORKS ========== */
-    .how-section {
-      padding: var(--section-padding) 0;
-      border-top: 1px solid var(--border-subtle);
-    }
-
-    .how-grid {
+    .numbers-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
-      margin-top: 56px;
+      margin-top: 48px;
+    }
+    .num-card {
+      padding: 36px 28px;
+      background: rgba(28,113,225,0.04);
+      border: 1px solid rgba(30,58,95,0.5);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      text-align: center;
+      transition: all 0.3s var(--ease);
+    }
+    .num-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--blue);
+      box-shadow: 0 8px 32px rgba(28,113,225,0.2);
+      background: rgba(28,113,225,0.08);
+    }
+    .num-card:hover .num-value { color: var(--green); }
+    .num-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 700; color: var(--white);
+      margin-bottom: 8px;
+      transition: color 0.3s var(--ease);
+    }
+    .num-label {
+      font-size: 0.875rem; color: var(--text-sec);
+      line-height: 1.5;
     }
 
-    .how-card {
-      padding: 40px 32px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
+    .numbers-total {
+      margin-top: 32px;
+      padding: 28px;
+      background: rgba(239,68,68,0.06);
+      border: 1px solid rgba(239,68,68,0.2);
       border-radius: 16px;
-      transition: all 0.3s ease;
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; flex-wrap: wrap;
+    }
+    .numbers-total-label {
+      font-size: 1rem; color: var(--text-sec);
+    }
+    .numbers-total-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2rem; font-weight: 700;
+      color: var(--red);
+    }
+    .numbers-total-note {
+      font-size: 0.85rem; color: var(--text-sec);
+      width: 100%; text-align: center;
+    }
+
+    /* ══════════════════════════════════════════
+       PAIN / IRONIA
+    ══════════════════════════════════════════ */
+    .pain-section {
+      padding: var(--section-py) 0;
+      background: var(--bg-primary);
+    }
+    .pain-content { max-width: 720px; }
+    .pain-content p {
+      font-size: 1.05rem; color: var(--text-sec);
+      margin-bottom: 24px; line-height: 1.8;
+    }
+    .pain-content p strong { color: var(--white); }
+    .pain-content .text-blue { color: var(--blue); font-weight: 600; }
+    .pain-pullquote {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+      font-weight: 700; color: var(--white);
+      border-left: 3px solid var(--blue);
+      padding-left: 24px; margin: 48px 0;
+      line-height: 1.5;
+    }
+    .pain-divider {
+      width: 60px; height: 2px;
+      background: var(--border); margin: 48px 0;
+    }
+
+    /* ══════════════════════════════════════════
+       HOW IT WORKS
+    ══════════════════════════════════════════ */
+    .how-section {
+      padding: var(--section-py) 0;
+      background: var(--bg-alt);
+    }
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px; margin-top: 56px;
       position: relative;
     }
+    /* connector line */
+    .how-connector {
+      position: absolute;
+      top: 52px; left: 20%; right: 20%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue), rgba(28,113,225,0.2));
+      z-index: 0;
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 1.2s var(--ease);
+    }
+    .how-connector.visible { transform: scaleX(1); }
 
+    .how-card {
+      position: relative; z-index: 1;
+      padding: 40px 28px;
+      background: rgba(28,113,225,0.04);
+      border: 1px solid rgba(30,58,95,0.5);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s var(--ease);
+    }
     .how-card:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--border-medium);
-      transform: translateY(-4px);
+      transform: translateY(-8px);
+      border-color: var(--blue);
+      box-shadow: 0 8px 32px rgba(28,113,225,0.2);
+      background: rgba(28,113,225,0.08);
     }
-
+    .how-card:hover .how-step { color: var(--blue); border-color: var(--blue); }
     .how-step {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      background: rgba(245, 158, 11, 0.1);
-      color: var(--accent);
-      font-weight: 800;
-      font-size: 1rem;
-      border-radius: 10px;
-      margin-bottom: 24px;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px;
+      border: 2px solid var(--border);
+      color: var(--text-sec); font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      border-radius: 12px; margin-bottom: 20px;
+      transition: all 0.3s var(--ease);
     }
-
+    .how-day {
+      font-size: 0.75rem; color: var(--blue);
+      font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 12px;
+    }
     .how-card h3 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem; font-weight: 700;
+      color: var(--white); margin-bottom: 12px;
     }
-
-    .how-card .how-day {
-      font-size: 0.8rem;
-      color: var(--accent);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 16px;
-    }
-
     .how-card p {
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-      line-height: 1.7;
+      font-size: 0.9rem; color: var(--text-sec); line-height: 1.7;
     }
 
-    /* ========== OFFER STACK ========== */
+    /* ══════════════════════════════════════════
+       OFFER STACK
+    ══════════════════════════════════════════ */
     .offer-section {
-      padding: var(--section-padding) 0;
-      border-top: 1px solid var(--border-subtle);
+      padding: var(--section-py) 0;
+      background: var(--bg-primary);
     }
-
     .offer-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-top: 56px;
+      display: flex; flex-direction: column;
+      gap: 14px; margin-top: 48px;
     }
-
     .offer-item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: start;
-      gap: 32px;
-      padding: 32px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      transition: all 0.3s ease;
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: start; gap: 24px;
+      padding: 28px 32px;
+      background: rgba(28,113,225,0.03);
+      border: 1px solid rgba(30,58,95,0.4);
+      border-radius: 14px;
+      transition: all 0.3s var(--ease);
+      position: relative; overflow: hidden;
     }
-
     .offer-item:hover {
-      border-color: var(--border-medium);
+      transform: translateY(-4px);
+      border-color: var(--blue);
+      box-shadow: 0 6px 24px rgba(28,113,225,0.15);
     }
+    .offer-item:hover .offer-badge { opacity: 1; transform: translateY(0); }
+    .offer-item:hover .offer-value { color: var(--blue); }
 
+    .offer-badge {
+      position: absolute; top: 12px; right: 12px;
+      padding: 3px 10px;
+      background: rgba(16,185,129,0.15);
+      border: 1px solid rgba(16,185,129,0.3);
+      border-radius: 6px;
+      font-size: 0.65rem; font-weight: 700;
+      color: var(--green); text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0; transform: translateY(-8px);
+      transition: all 0.3s var(--ease);
+    }
     .offer-name {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--white); margin-bottom: 6px;
     }
-
-    .offer-desc {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
+    .offer-desc { font-size: 0.875rem; color: var(--text-sec); line-height: 1.6; }
     .offer-value {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem; font-weight: 700;
+      color: #555; text-decoration: line-through;
       white-space: nowrap;
-      text-decoration: line-through;
+      transition: color 0.3s var(--ease);
     }
 
     .offer-total {
-      margin-top: 32px;
-      padding: 32px;
-      background: rgba(245, 158, 11, 0.05);
-      border: 1px solid rgba(245, 158, 11, 0.15);
-      border-radius: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
+      margin-top: 32px; padding: 32px;
+      background: rgba(28,113,225,0.06);
+      border: 1px solid rgba(28,113,225,0.25);
+      border-radius: 16px;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 16px;
     }
-
-    .offer-total-left {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
     .offer-total-original {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      text-decoration: line-through;
+      font-size: 0.9rem; color: #555; text-decoration: line-through;
     }
-
     .offer-total-price {
-      font-family: 'Syne', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--accent);
-      letter-spacing: -1px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem; font-weight: 700;
+      color: var(--blue); letter-spacing: -1px;
     }
+    .offer-total-label { font-size: 0.85rem; color: var(--text-sec); }
 
-    .offer-total-label {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-    }
-
-    /* ========== NOT FOR YOU ========== */
+    /* ══════════════════════════════════════════
+       NOT FOR YOU
+    ══════════════════════════════════════════ */
     .notforyou-section {
-      padding: var(--section-padding) 0;
-      border-top: 1px solid var(--border-subtle);
+      padding: var(--section-py) 0;
+      background: var(--bg-alt);
     }
-
     .notforyou-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      margin-top: 48px;
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 20px; margin-top: 48px;
     }
-
     .notforyou-card {
       padding: 32px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      position: relative;
+      background: rgba(239,68,68,0.03);
+      border: 1px solid rgba(30,58,95,0.4);
+      border-radius: 14px;
+      transition: all 0.3s var(--ease);
     }
-
-    .notforyou-card::before {
-      content: '✕';
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      background: rgba(239, 68, 68, 0.1);
-      color: #ef4444;
-      font-size: 0.75rem;
-      font-weight: 700;
-      border-radius: 6px;
-      margin-bottom: 16px;
+    .notforyou-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(239,68,68,0.4);
     }
-
+    .notforyou-icon {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(239,68,68,0.1);
+      border-radius: 10px; margin-bottom: 16px;
+    }
+    .notforyou-icon svg { width: 18px; height: 18px; stroke: var(--red); stroke-width: 2; fill: none; }
     .notforyou-card h4 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      color: var(--white); margin-bottom: 10px;
     }
+    .notforyou-card p { font-size: 0.875rem; color: var(--text-sec); line-height: 1.7; }
 
-    .notforyou-card p {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.7;
-    }
-
-    /* ========== GUARANTEE ========== */
+    /* ══════════════════════════════════════════
+       GUARANTEE
+    ══════════════════════════════════════════ */
     .guarantee-section {
-      padding: var(--section-padding) 0;
-      border-top: 1px solid var(--border-subtle);
+      padding: var(--section-py) 0;
+      background: var(--bg-primary);
     }
-
     .guarantee-block {
-      max-width: 800px;
-      margin: 0 auto;
-      text-align: center;
-      padding: 64px 48px;
-      background: var(--bg-card);
-      border: 1px solid rgba(245, 158, 11, 0.2);
-      border-radius: 20px;
-      position: relative;
-      overflow: hidden;
+      max-width: 800px; margin: 0 auto;
+      text-align: center; padding: 64px 48px;
+      background: rgba(28,113,225,0.04);
+      border: 1px solid rgba(28,113,225,0.3);
+      border-radius: 24px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 0 60px rgba(28,113,225,0.08);
     }
-
     .guarantee-block::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
-      pointer-events: none;
+      content: ''; position: absolute;
+      top: -1px; left: -1px; right: -1px; bottom: -1px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(28,113,225,0.2), transparent 50%, rgba(28,113,225,0.1));
+      z-index: -1;
     }
-
-    .guarantee-icon {
-      font-size: 3rem;
-      margin-bottom: 24px;
-    }
-
+    .guarantee-icon { margin-bottom: 24px; }
+    .guarantee-icon svg { width: 48px; height: 48px; stroke: var(--blue); stroke-width: 1.5; fill: none; }
     .guarantee-block h2 {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: clamp(1.5rem, 3vw, 2rem);
-      font-weight: 800;
-      color: var(--text-primary);
-      margin-bottom: 24px;
-      letter-spacing: -1px;
+      font-weight: 700; color: var(--white);
+      margin-bottom: 24px; letter-spacing: -1px;
     }
-
     .guarantee-block p {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      line-height: 1.8;
-      margin-bottom: 16px;
+      font-size: 1rem; color: var(--text-sec);
+      line-height: 1.8; margin-bottom: 16px;
     }
-
-    .guarantee-block p strong {
-      color: var(--text-primary);
-    }
-
+    .guarantee-block p strong { color: var(--white); }
     .guarantee-note {
       font-size: 0.8rem !important;
-      color: var(--text-muted) !important;
-      font-style: italic;
-      margin-top: 32px !important;
+      color: #555 !important;
+      font-style: italic; margin-top: 32px !important;
     }
 
-    /* ========== PRICING ANCHOR ========== */
+    /* ══════════════════════════════════════════
+       PRICING / COMPARISON
+    ══════════════════════════════════════════ */
     .pricing-section {
-      padding: var(--section-padding) 0;
-      border-top: 1px solid var(--border-subtle);
+      padding: var(--section-py) 0;
+      background: var(--bg-alt);
     }
-
     .pricing-table {
       margin-top: 48px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 700px;
+      display: flex; flex-direction: column;
+      gap: 10px; max-width: 720px;
     }
-
     .pricing-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 24px;
-      padding: 20px 24px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      align-items: center;
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 24px; padding: 20px 24px;
+      background: rgba(28,113,225,0.03);
+      border: 1px solid rgba(30,58,95,0.3);
+      border-radius: 12px; align-items: center;
+      transition: all 0.3s var(--ease);
     }
-
+    .pricing-row:hover { border-color: var(--border); }
     .pricing-row.highlight {
-      background: rgba(245, 158, 11, 0.06);
-      border-color: rgba(245, 158, 11, 0.3);
+      background: rgba(28,113,225,0.08);
+      border-color: var(--blue);
+      box-shadow: 0 0 20px rgba(28,113,225,0.12);
     }
-
-    .pricing-row-name {
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-    }
-
-    .pricing-row.highlight .pricing-row-name {
-      color: var(--text-primary);
-      font-weight: 700;
-    }
-
+    .pricing-row-name { font-size: 0.95rem; color: var(--text-sec); }
+    .pricing-row.highlight .pricing-row-name { color: var(--white); font-weight: 700; }
     .pricing-row-cost {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-align: right;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem; font-weight: 500;
+      color: #555; text-align: right;
     }
-
     .pricing-row.highlight .pricing-row-cost {
-      color: var(--accent);
-      font-size: 1.1rem;
-      font-weight: 800;
+      color: var(--blue); font-size: 1.1rem; font-weight: 700;
     }
-
-    .pricing-math {
-      max-width: 700px;
-      margin-top: 40px;
-    }
-
+    .pricing-math { max-width: 720px; margin-top: 40px; }
     .pricing-math p {
-      font-size: 1.05rem;
-      color: var(--text-secondary);
-      margin-bottom: 16px;
-      line-height: 1.7;
+      font-size: 1.05rem; color: var(--text-sec);
+      margin-bottom: 16px; line-height: 1.7;
     }
+    .pricing-math strong { color: var(--white); }
+    .pricing-math .hl { color: var(--green); font-weight: 700; }
 
-    .pricing-math strong {
-      color: var(--text-primary);
-    }
-
-    .pricing-math .accent-text {
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    /* ========== FAQ ========== */
+    /* ══════════════════════════════════════════
+       FAQ
+    ══════════════════════════════════════════ */
     .faq-section {
-      padding: var(--section-padding) 0;
-      border-top: 1px solid var(--border-subtle);
+      padding: var(--section-py) 0;
+      background: var(--bg-primary);
     }
-
-    .faq-list {
-      max-width: 740px;
-      margin-top: 48px;
-    }
-
-    .faq-item {
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
+    .faq-list { max-width: 740px; margin-top: 48px; }
+    .faq-item { border-bottom: 1px solid rgba(30,58,95,0.4); }
     .faq-question {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 24px 0;
-      background: none;
-      border: none;
-      color: var(--text-primary);
-      font-size: 1.05rem;
-      font-weight: 600;
-      text-align: left;
-      cursor: pointer;
+      width: 100%; display: flex; justify-content: space-between;
+      align-items: center; padding: 24px 0;
+      background: none; border: none; border-left: 3px solid transparent;
+      color: var(--white); font-size: 1.05rem; font-weight: 600;
+      text-align: left; cursor: none;
       font-family: 'Inter', sans-serif;
-      transition: color 0.3s ease;
-      gap: 16px;
+      transition: all 0.3s var(--ease); gap: 16px;
+      padding-left: 16px;
     }
-
-    .faq-question:hover {
-      color: var(--accent);
-    }
-
+    .faq-question:hover { color: var(--blue); border-left-color: var(--blue); }
     .faq-icon {
-      flex-shrink: 0;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.3s ease;
+      flex-shrink: 0; width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.3s var(--ease);
     }
-
-    .faq-icon svg {
-      width: 16px;
-      height: 16px;
-      stroke: currentColor;
-      stroke-width: 2;
-      fill: none;
-    }
-
-    .faq-item.active .faq-icon {
-      transform: rotate(45deg);
-    }
-
+    .faq-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
+    .faq-item.active .faq-icon { transform: rotate(45deg); }
+    .faq-item.active .faq-question { color: var(--blue); border-left-color: var(--blue); }
     .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease, padding 0.4s ease;
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.5s var(--ease);
     }
-
-    .faq-answer-inner {
-      padding-bottom: 24px;
-    }
-
+    .faq-answer-inner { padding: 0 0 24px 16px; }
     .faq-answer p {
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-      line-height: 1.8;
-      margin-bottom: 12px;
+      font-size: 0.95rem; color: var(--text-sec);
+      line-height: 1.8; margin-bottom: 12px;
     }
+    .faq-answer p:last-child { margin-bottom: 0; }
 
-    .faq-answer p:last-child {
-      margin-bottom: 0;
-    }
-
-    /* ========== FINAL CTA ========== */
+    /* ══════════════════════════════════════════
+       FINAL CTA
+    ══════════════════════════════════════════ */
     .cta-section {
-      padding: var(--section-padding) 0;
-      border-top: 1px solid var(--border-subtle);
+      padding: var(--section-py) 0;
+      background: linear-gradient(180deg, var(--bg-alt) 0%, var(--bg-primary) 100%);
       text-align: center;
+      position: relative;
     }
-
+    .cta-glow {
+      position: absolute; bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 300px;
+      background: radial-gradient(ellipse, rgba(28,113,225,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
     .cta-section .section-title {
-      max-width: 600px;
-      margin: 0 auto 16px;
+      max-width: 600px; margin: 0 auto 16px;
     }
-
     .cta-section p {
-      font-size: 1.05rem;
-      color: var(--text-secondary);
-      max-width: 560px;
-      margin: 0 auto 16px;
-      line-height: 1.7;
+      font-size: 1.05rem; color: var(--text-sec);
+      max-width: 540px; margin: 0 auto 12px; line-height: 1.7;
     }
-
-    .cta-section .cta-subtext {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 40px;
-    }
-
+    .cta-sub { font-size: 0.85rem !important; color: #555 !important; margin-bottom: 40px !important; }
     .cta-limited {
-      display: inline-block;
-      margin-top: 20px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      font-weight: 500;
+      display: inline-block; margin-top: 20px;
+      font-size: 0.8rem; color: var(--text-sec);
     }
 
-    /* ========== FOOTER ========== */
+    /* ══════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════ */
     .footer {
       padding: 40px 0;
-      border-top: 1px solid var(--border-subtle);
+      border-top: 1px solid rgba(30,58,95,0.3);
       text-align: center;
     }
-
     .footer-logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--text-primary);
-      margin-bottom: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;
     }
+    .footer-logo .roi { color: var(--blue); }
+    .footer-logo .ops { color: var(--white); }
+    .footer-tagline { font-size: 0.85rem; color: var(--text-sec); font-style: italic; }
+    .footer-copy { font-size: 0.75rem; color: #444; margin-top: 12px; }
 
-    .footer-logo span {
-      color: var(--accent);
-    }
-
-    .footer-tagline {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    .footer-copy {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 16px;
-    }
-
-    /* ========== RESPONSIVE ========== */
+    /* ══════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════ */
     @media (max-width: 768px) {
-      .how-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .notforyou-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .offer-item {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-
-      .offer-value {
-        text-align: left;
-      }
-
-      .offer-total {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .hero-buttons {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .btn-primary, .btn-secondary {
-        justify-content: center;
-      }
-
-      .guarantee-block {
-        padding: 40px 24px;
-      }
-
-      .pricing-row {
-        grid-template-columns: 1fr;
-        gap: 4px;
-      }
-
-      .pricing-row-cost {
-        text-align: left;
-      }
-
-      .pain-stats {
-        grid-template-columns: 1fr;
-      }
+      .numbers-grid, .how-grid { grid-template-columns: 1fr; }
+      .notforyou-grid { grid-template-columns: 1fr; }
+      .offer-item { grid-template-columns: 1fr; gap: 8px; }
+      .offer-value { text-align: left; }
+      .offer-total { flex-direction: column; text-align: center; }
+      .hero-buttons { flex-direction: column; align-items: stretch; }
+      .btn-primary, .btn-secondary { justify-content: center; }
+      .guarantee-block { padding: 40px 24px; }
+      .pricing-row { grid-template-columns: 1fr; gap: 4px; }
+      .pricing-row-cost { text-align: left; }
+      .how-connector { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ====== NAVBAR ====== -->
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ══════ NAVBAR ══════ -->
   <nav class="navbar" id="navbar">
     <div class="container">
-      <a href="#" class="logo">ROI<span>-OPS</span>™</a>
+      <a href="#" class="logo"><span class="roi">ROI</span><span class="ops">-OPS</span>™</a>
       <a href="https://calendly.com/seu-link" class="nav-cta">
-        Agendar Diagnóstico
-        <span class="btn-arrow">&rarr;</span>
+        Agendar Diagnóstico <span class="arrow">&rarr;</span>
       </a>
     </div>
   </nav>
 
-  <!-- ====== HERO ====== -->
+  <!-- ══════ HERO ══════ -->
   <section class="hero">
-    <div class="container">
-      <div class="hero-badge">Diagnóstico de Escala em 5 Dias</div>
-      <h1 class="fade-in">Sua agência mede tudo.<br><span class="accent">Menos ela mesma.</span></h1>
-      <p class="hero-sub fade-in">Você sabe calcular o ROAS de qualquer campanha. Mas sabe quanto custa seu onboarding manual? Seus relatórios feitos no Sheets? Seu follow-up por WhatsApp?</p>
-      <p class="hero-highlight fade-in">Em 5 dias úteis, o ROI-OPS™ identifica onde estão seus <span class="accent">R$8.000–R$25.000/mês</span> em perdas operacionais — e quais 3 automações eliminam 80% delas.</p>
-      <p class="hero-guarantee fade-in">Garantia: se não encontrarmos R$5.000/mês em perdas, devolvemos 100%.</p>
-      <div class="hero-buttons fade-in">
+    <div class="hero-grid"><canvas id="dotGrid"></canvas></div>
+    <div class="hero-glow"></div>
+    <div class="container" style="position:relative; z-index:2;">
+      <div class="hero-badge reveal">Diagnóstico de Escala em 5 Dias</div>
+      <h1 class="reveal">Sua agência mede tudo.<br><span class="accent">Menos ela mesma.</span><span class="typing-cursor"></span></h1>
+      <p class="hero-sub reveal">Você sabe calcular o ROAS de qualquer campanha. Mas sabe quanto custa seu onboarding manual? Seus relatórios feitos no Sheets? Seu follow-up por WhatsApp?</p>
+      <p class="hero-highlight reveal">Em 5 dias úteis, o ROI-OPS™ identifica onde estão seus <span class="accent">R$8.000–R$25.000/mês</span> em perdas operacionais — e quais 3 automações eliminam 80% delas.</p>
+      <p class="hero-guarantee reveal">Garantia: se não encontrarmos R$5.000/mês em perdas, devolvemos 100%.</p>
+      <div class="hero-buttons reveal">
         <a href="https://calendly.com/seu-link" class="btn-primary">
-          Agendar meu Diagnóstico
-          <span class="btn-arrow">&rarr;</span>
+          Agendar meu Diagnóstico <span class="arrow">&rarr;</span>
         </a>
-        <a href="#como-funciona" class="btn-secondary">
-          Como funciona
-          <span class="btn-arrow">&darr;</span>
+        <a href="#numeros" class="btn-secondary">
+          Ver os números <span class="arrow">&darr;</span>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- ====== PAIN / A IRONIA ====== -->
+  <!-- ══════ NUMBERS ══════ -->
+  <section class="numbers-section" id="numeros">
+    <div class="container">
+      <span class="section-label reveal">O vazamento silencioso</span>
+      <h2 class="section-title reveal">Quanto sua agência perde por mês<br>em processos manuais</h2>
+      <div class="numbers-grid">
+        <div class="num-card reveal">
+          <div class="num-value" data-target="2800">R$0</div>
+          <div class="num-label">Relatórios semanais "que levam 40 minutinhos"</div>
+        </div>
+        <div class="num-card reveal">
+          <div class="num-value" data-target="1200">R$0</div>
+          <div class="num-label">Onboarding que "funciona, mais ou menos" — por cliente</div>
+        </div>
+        <div class="num-card reveal">
+          <div class="num-value" data-target="900">R$0</div>
+          <div class="num-label">Follow-up de renovação feito no WhatsApp</div>
+        </div>
+      </div>
+      <div class="numbers-total reveal">
+        <span class="numbers-total-label">Total em apenas 3 processos:</span>
+        <span class="numbers-total-value mono" data-target="4900">R$0</span>
+        <span class="numbers-total-note">Sem contar briefing, offboarding, gestão de acessos, reportes internos...</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ A IRONIA ══════ -->
   <section class="pain-section">
     <div class="container">
-      <div class="pain-content fade-in">
-        <span class="section-label">A ironia</span>
-        <h2 class="section-title">A ironia que ninguém fala em público</h2>
-
-        <p>Você passou anos aprendendo a medir o que importa. Sabe o CAC de cada canal. Sabe o LTV médio por vertical. Sabe quais criativos têm CTR acima de 2% e quais estão queimando verba.</p>
-
-        <p>Agora responda: <strong>quanto custou o seu onboarding da última semana?</strong></p>
-
-        <p>Não uma estimativa. O número real — horas trabalhadas, multiplicadas pelo custo horário de cada pessoa envolvida, multiplicado pela frequência mensal.</p>
-
-        <p>A maioria dos donos de agência não sabe. Não porque não são inteligentes. Porque nunca mediram. Porque o cliente sempre veio primeiro, a campanha sempre foi mais urgente, e a operação interna <strong>nunca pareceu um problema que cabia em planilha.</strong></p>
-
+      <div class="pain-content">
+        <span class="section-label reveal">A ironia</span>
+        <h2 class="section-title reveal">A ironia que ninguém fala em público</h2>
+        <div class="reveal">
+          <p>Você passou anos aprendendo a medir o que importa. Sabe o <span class="text-blue">CAC</span> de cada canal. Sabe o <span class="text-blue">LTV</span> médio por vertical. Sabe quais criativos têm CTR acima de 2% e quais estão queimando verba.</p>
+          <p>Agora responda: <strong>quanto custou o seu onboarding da última semana?</strong></p>
+          <p>Não uma estimativa. O número real — horas trabalhadas, multiplicadas pelo custo horário de cada pessoa envolvida, multiplicado pela frequência mensal.</p>
+          <p>A maioria dos donos de agência não sabe. Não porque não são inteligentes. Porque <strong>nunca mediram.</strong></p>
+        </div>
         <div class="pain-divider"></div>
-
-        <div class="pain-pullquote fade-in">Fecha mais clientes &rarr; precisa de mais gente &rarr; contrata &rarr; margem cai &rarr; precisa fechar mais clientes para compensar.</div>
-
-        <p>É um ciclo. E funciona — até o dia que não funciona mais. Até o dia que a operação não aguenta mais um cliente sem você entrar no meio.</p>
-
-        <p><strong>Nesse ponto, você não tem uma agência. Você tem um emprego que paga mais.</strong></p>
-
+        <div class="pain-pullquote reveal">Fecha mais clientes &rarr; precisa de mais gente &rarr; contrata &rarr; margem cai &rarr; precisa fechar mais clientes para compensar.</div>
+        <div class="reveal">
+          <p>É um ciclo. E funciona — até o dia que não funciona mais. Até o dia que a operação não aguenta mais um cliente sem você entrar no meio.</p>
+          <p><strong>Nesse ponto, você não tem uma agência. Você tem um emprego que paga mais.</strong></p>
+        </div>
         <div class="pain-divider"></div>
-      </div>
-
-      <div class="pain-stats fade-in">
-        <div class="pain-stat">
-          <div class="pain-stat-value">R$2.800/mês</div>
-          <div class="pain-stat-label">Custo dos relatórios semanais "que levam 40 minutinhos"</div>
+        <div class="reveal">
+          <p>Não é que a agência está quebrando. É que está crescendo com um <span class="text-blue">vazamento silencioso que consome entre 10% e 30% da receita</span> — e que pode ser eliminado em menos de 90 dias.</p>
+          <p>Mas só se você souber onde está o vazamento.</p>
         </div>
-        <div class="pain-stat">
-          <div class="pain-stat-value">R$1.200/cliente</div>
-          <div class="pain-stat-label">Custo de um onboarding que "funciona, mais ou menos"</div>
-        </div>
-        <div class="pain-stat">
-          <div class="pain-stat-value">R$900/mês</div>
-          <div class="pain-stat-label">Follow-up de renovação feito no WhatsApp</div>
-        </div>
-      </div>
-
-      <div class="pain-content fade-in">
-        <p>Soma <strong>R$4.900/mês</strong>. Só nesses três processos. Sem contar briefing, offboarding, gestão de acessos, reportes internos.</p>
-
-        <p>Não é que a agência está quebrando. É que está crescendo com um <strong>vazamento silencioso que consome entre 10% e 30% da receita</strong> — e que pode ser eliminado em menos de 90 dias.</p>
-
-        <p>Mas só se você souber onde está o vazamento.</p>
       </div>
     </div>
   </section>
 
-  <!-- ====== COMO FUNCIONA ====== -->
+  <!-- ══════ COMO FUNCIONA ══════ -->
   <section class="how-section" id="como-funciona">
     <div class="container">
-      <span class="section-label fade-in">Metodologia</span>
-      <h2 class="section-title fade-in">Como funciona — 3 passos, 5 dias</h2>
-      <p class="fade-in" style="color: var(--text-secondary); max-width: 560px;">Total de tempo seu: aproximadamente <strong style="color: var(--text-primary)">3 horas</strong>, distribuídas em 5 dias.</p>
-
+      <span class="section-label reveal">Metodologia</span>
+      <h2 class="section-title reveal">Como funciona — 3 passos, 5 dias</h2>
+      <p class="reveal" style="color:var(--text-sec);max-width:500px;">Total de tempo seu: aproximadamente <strong style="color:var(--white)">3 horas</strong>, distribuídas em 5 dias.</p>
       <div class="how-grid">
-        <div class="how-card fade-in">
-          <div class="how-step">1</div>
+        <div class="how-connector" id="howConnector"></div>
+        <div class="how-card reveal">
+          <div class="how-step">01</div>
           <div class="how-day">Dia 1</div>
           <h3>Sprint de Diagnóstico</h3>
-          <p>Call de 30 minutos. Você explica como a agência funciona e sai com o custo real de pelo menos um processo mapeado ao vivo. Sem compromisso — você decide se quer continuar depois de ver o primeiro número.</p>
+          <p>Call de 30 minutos. Você explica como a agência funciona e sai com o custo real de pelo menos um processo mapeado ao vivo. Sem compromisso.</p>
         </div>
-        <div class="how-card fade-in">
-          <div class="how-step">2</div>
+        <div class="how-card reveal">
+          <div class="how-step">02</div>
           <div class="how-day">Dias 2–4</div>
           <h3>As 3 Sessões</h3>
-          <p>Três sessões de 45 minutos cada. Você responde perguntas estruturadas. A gente faz o mapeamento completo, os cálculos de custo e o levantamento do ROI projetado de cada automação.</p>
+          <p>Três sessões de 45 minutos. Você responde perguntas estruturadas. A gente faz o mapeamento completo, os cálculos de custo e o ROI projetado de cada automação.</p>
         </div>
-        <div class="how-card fade-in">
-          <div class="how-step">3</div>
+        <div class="how-card reveal">
+          <div class="how-step">03</div>
           <div class="how-day">Dia 5</div>
           <h3>Entrega e Revisão</h3>
-          <p>Você recebe o pacote completo: Mapa de Sangramento Operacional™, Calculadora ROI-OPS™ e Plano de Escala 90 Dias™. Mais 30 minutos de revisão ao vivo.</p>
+          <p>Pacote completo: Mapa de Sangramento Operacional™, Calculadora ROI-OPS™ e Plano de Escala 90 Dias™. Mais 30 min de revisão ao vivo.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ====== OFFER STACK ====== -->
+  <!-- ══════ OFFER STACK ══════ -->
   <section class="offer-section">
     <div class="container">
-      <span class="section-label fade-in">O que está incluído</span>
-      <h2 class="section-title fade-in">O que você recebe</h2>
-
+      <span class="section-label reveal">O que está incluído</span>
+      <h2 class="section-title reveal">O que você recebe</h2>
       <div class="offer-grid">
-        <div class="offer-item fade-in">
-          <div>
-            <div class="offer-name">ROI-OPS Diagnóstico Completo</div>
-            <div class="offer-desc">4 sessões estruturadas + mapa completo de processos + custo real de cada gargalo + ROI projetado de automação</div>
-          </div>
-          <div class="offer-value">R$3.000</div>
+        <div class="offer-item reveal">
+          <div><div class="offer-name">ROI-OPS Diagnóstico Completo</div><div class="offer-desc">4 sessões estruturadas + mapa completo de processos + custo real de cada gargalo + ROI projetado de automação</div></div>
+          <div class="offer-value mono">R$3.000</div>
+          <span class="offer-badge">Incluído</span>
         </div>
-        <div class="offer-item fade-in">
-          <div>
-            <div class="offer-name">Calculadora ROI-OPS™</div>
-            <div class="offer-desc">Planilha proprietária que calcula automaticamente o ROI de qualquer automação — para usar hoje e em qualquer decisão futura</div>
-          </div>
-          <div class="offer-value">R$800</div>
+        <div class="offer-item reveal">
+          <div><div class="offer-name">Calculadora ROI-OPS™</div><div class="offer-desc">Planilha proprietária que calcula automaticamente o ROI de qualquer automação — para usar hoje e no futuro</div></div>
+          <div class="offer-value mono">R$800</div>
+          <span class="offer-badge">Incluído</span>
         </div>
-        <div class="offer-item fade-in">
-          <div>
-            <div class="offer-name">Plano de Escala 90 Dias™</div>
-            <div class="offer-desc">Roadmap das 3 automações de maior impacto, priorizadas por: ROI projetado, facilidade de implementação e risco operacional</div>
-          </div>
-          <div class="offer-value">R$1.200</div>
+        <div class="offer-item reveal">
+          <div><div class="offer-name">Plano de Escala 90 Dias™</div><div class="offer-desc">Roadmap das 3 automações de maior impacto, priorizadas por: ROI projetado, facilidade de implementação e risco operacional</div></div>
+          <div class="offer-value mono">R$1.200</div>
+          <span class="offer-badge">Incluído</span>
         </div>
-        <div class="offer-item fade-in">
-          <div>
-            <div class="offer-name">Deck "O Custo do Caos"™</div>
-            <div class="offer-desc">Template de apresentação com os números reais da sua agência — para apresentar resultados para sócios e time</div>
-          </div>
-          <div class="offer-value">R$500</div>
+        <div class="offer-item reveal">
+          <div><div class="offer-name">Deck "O Custo do Caos"™</div><div class="offer-desc">Template de apresentação com os números reais da sua agência — para apresentar para sócios e time</div></div>
+          <div class="offer-value mono">R$500</div>
+          <span class="offer-badge">Incluído</span>
         </div>
-        <div class="offer-item fade-in">
-          <div>
-            <div class="offer-name">Sessão de Priorização ao Vivo</div>
-            <div class="offer-desc">30 minutos de revisão do roadmap após a entrega — tira dúvidas, ajusta prioridades, define próximo passo</div>
-          </div>
-          <div class="offer-value">R$600</div>
+        <div class="offer-item reveal">
+          <div><div class="offer-name">Sessão de Priorização ao Vivo</div><div class="offer-desc">30 minutos de revisão do roadmap — tira dúvidas, ajusta prioridades, define o próximo passo</div></div>
+          <div class="offer-value mono">R$600</div>
+          <span class="offer-badge">Incluído</span>
         </div>
       </div>
-
-      <div class="offer-total fade-in">
-        <div class="offer-total-left">
-          <span class="offer-total-original">Valor total: R$6.100</span>
-          <span class="offer-total-price">R$1.500</span>
-          <span class="offer-total-label">Com garantia incondicional de R$5.000/mês em perdas identificadas</span>
+      <div class="offer-total reveal">
+        <div>
+          <span class="offer-total-original mono">Valor total: R$6.100</span>
+          <div class="offer-total-price">R$1.500</div>
+          <span class="offer-total-label">Com garantia de R$5.000/mês em perdas identificadas</span>
         </div>
         <a href="https://calendly.com/seu-link" class="btn-primary">
-          Agendar Diagnóstico
-          <span class="btn-arrow">&rarr;</span>
+          Agendar Diagnóstico <span class="arrow">&rarr;</span>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- ====== NOT FOR YOU ====== -->
+  <!-- ══════ NOT FOR YOU ══════ -->
   <section class="notforyou-section">
     <div class="container">
-      <span class="section-label fade-in">Seja honesto</span>
-      <h2 class="section-title fade-in">Isso NÃO é para você se...</h2>
-
+      <span class="section-label reveal">Seja honesto</span>
+      <h2 class="section-title reveal">Isso NÃO é para você se...</h2>
       <div class="notforyou-grid">
-        <div class="notforyou-card fade-in">
+        <div class="notforyou-card reveal">
+          <div class="notforyou-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
           <h4>Fatura menos de R$30k/mês</h4>
           <p>Nesse estágio, seu problema ainda é aquisição de clientes, não eficiência operacional. Construa receita primeiro.</p>
         </div>
-        <div class="notforyou-card fade-in">
+        <div class="notforyou-card reveal">
+          <div class="notforyou-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
           <h4>Não quer abrir dados reais</h4>
           <p>Horas por processo, custo por colaborador, frequência real. Sem esses dados, não há diagnóstico — só achismo com formatação bonita.</p>
         </div>
-        <div class="notforyou-card fade-in">
+        <div class="notforyou-card reveal">
+          <div class="notforyou-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
           <h4>Quer "parecer que automatiza"</h4>
           <p>O ROI-OPS™ é um exercício financeiro, não um projeto de modernização. Se o objetivo é ter um Notion bonito, esse não é o produto certo.</p>
         </div>
-        <div class="notforyou-card fade-in">
+        <div class="notforyou-card reveal">
+          <div class="notforyou-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
           <h4>Já tem operação estruturada</h4>
-          <p>Processos documentados e métricas de performance interna funcionando? Parabéns — você não precisa de diagnóstico, precisa de implementação.</p>
+          <p>Processos documentados e métricas funcionando? Parabéns — você não precisa de diagnóstico, precisa de implementação.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ====== GUARANTEE ====== -->
+  <!-- ══════ GUARANTEE ══════ -->
   <section class="guarantee-section">
     <div class="container">
-      <div class="guarantee-block fade-in">
-        <div class="guarantee-icon">&#9733;</div>
-        <h2>Garantia: R$5.000/mês ou devolvemos 100%</h2>
-        <p>A única forma de você perder R$1.500 nesse diagnóstico: se sua agência for <strong>tão eficiente</strong> que não consigamos identificar R$5.000/mês em perdas passíveis de automação.</p>
+      <div class="guarantee-block reveal">
+        <div class="guarantee-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h2>Garantia: R$5.000/mês<br>ou devolvemos 100%</h2>
+        <p>A única forma de você perder R$1.500: se sua agência for <strong>tão eficiente</strong> que não consigamos identificar R$5.000/mês em perdas passíveis de automação.</p>
         <p>Se isso acontecer — devolvemos 100% do seu investimento. <strong>Sem burocracia, sem perguntas.</strong></p>
-        <p><strong>Por que oferecemos essa garantia com confiança:</strong> qualquer agência com 5+ pessoas, operando há mais de 12 meses, tem pelo menos R$5.000/mês em processos manuais que podem ser automatizados. Não é especulação — é o padrão que se repete em todo diagnóstico.</p>
+        <p><strong>Por que oferecemos com confiança:</strong> qualquer agência com 5+ pessoas, operando há mais de 12 meses, tem pelo menos R$5.000/mês em processos manuais automatizáveis. Não é especulação — é o padrão.</p>
         <p class="guarantee-note">Condicional à participação nas 3 sessões com dados reais de tempo e custo.</p>
       </div>
     </div>
   </section>
 
-  <!-- ====== PRICING ANCHOR ====== -->
+  <!-- ══════ PRICING ══════ -->
   <section class="pricing-section">
     <div class="container">
-      <span class="section-label fade-in">Compare</span>
-      <h2 class="section-title fade-in">Quanto custa não fazer isso</h2>
-
-      <div class="pricing-table fade-in">
+      <span class="section-label reveal">Compare</span>
+      <h2 class="section-title reveal">Quanto custa não fazer isso</h2>
+      <div class="pricing-table reveal">
         <div class="pricing-row">
           <span class="pricing-row-name">Consultor de processos generalista</span>
           <span class="pricing-row-cost">R$8.000–R$20.000</span>
@@ -1127,162 +953,254 @@
           <span class="pricing-row-cost">R$1.500</span>
         </div>
       </div>
-
-      <div class="pricing-math fade-in">
-        <p>Se encontrarmos <strong>R$10.000/mês</strong> em perdas: você pagou R$1.500 para recuperar <span class="accent-text">R$120.000 no próximo ano.</span></p>
-        <p>Se encontrarmos <strong>R$5.000/mês</strong>: você pagou R$1.500 para recuperar <span class="accent-text">R$60.000 no próximo ano.</span></p>
-        <p>Se encontrarmos <strong>menos que R$5.000/mês</strong>: <span class="accent-text">você não paga nada.</span></p>
+      <div class="pricing-math reveal">
+        <p>Se encontrarmos <strong>R$10.000/mês</strong> em perdas: você pagou R$1.500 para recuperar <span class="hl">R$120.000 no próximo ano.</span></p>
+        <p>Se encontrarmos <strong>R$5.000/mês</strong>: você pagou R$1.500 para recuperar <span class="hl">R$60.000 no próximo ano.</span></p>
+        <p>Se encontrarmos <strong>menos que R$5.000/mês</strong>: <span class="hl">você não paga nada.</span></p>
       </div>
     </div>
   </section>
 
-  <!-- ====== FAQ ====== -->
+  <!-- ══════ FAQ ══════ -->
   <section class="faq-section">
     <div class="container">
-      <span class="section-label fade-in">Dúvidas</span>
-      <h2 class="section-title fade-in">Perguntas frequentes</h2>
-
+      <span class="section-label reveal">Dúvidas</span>
+      <h2 class="section-title reveal">Perguntas frequentes</h2>
       <div class="faq-list">
-        <div class="faq-item fade-in">
+        <div class="faq-item reveal">
           <button class="faq-question" onclick="toggleFaq(this)">
             <span>Não tenho tempo para mais uma coisa no meu calendário.</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              <p>O diagnóstico inteiro demanda aproximadamente 3 horas do seu tempo, distribuídas em 5 dias úteis — sessões de 45 minutos que você agenda nos horários que funcionam para você.</p>
-              <p>Todo o trabalho pesado — mapeamento, cálculos, construção do roadmap — é feito pela gente. Você aparece, responde perguntas e recebe os resultados.</p>
-            </div>
-          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            <p>O diagnóstico inteiro demanda aproximadamente 3 horas do seu tempo, distribuídas em 5 dias úteis — sessões de 45 minutos que você agenda nos horários que funcionam para você.</p>
+            <p>Todo o trabalho pesado — mapeamento, cálculos, roadmap — é feito pela gente. Você aparece, responde perguntas e recebe os resultados.</p>
+          </div></div>
         </div>
-
-        <div class="faq-item fade-in">
+        <div class="faq-item reveal">
           <button class="faq-question" onclick="toggleFaq(this)">
             <span>Já sei onde estão meus problemas. Não preciso de diagnóstico.</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              <p>Provavelmente você sabe os problemas. A questão é: você sabe o custo real de cada um deles, em R$/mês? E sabe o ROI de resolver cada um?</p>
-              <p>Saber que "o onboarding é manual e chato" é diferente de saber que "o onboarding custa R$1.400/cliente, você onboarda 4 por mês, e uma automação de R$3.000 se paga em menos de 60 dias."</p>
-              <p>O diagnóstico transforma intuição em número. E número é o que você usa para decidir onde investir primeiro.</p>
-            </div>
-          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            <p>Provavelmente você sabe os problemas. A questão é: você sabe o custo real em R$/mês? E o ROI de resolver cada um?</p>
+            <p>Saber que "o onboarding é manual e chato" é diferente de saber que "custa R$1.400/cliente, você onboarda 4 por mês, e uma automação de R$3.000 se paga em 60 dias."</p>
+            <p>O diagnóstico transforma intuição em número.</p>
+          </div></div>
         </div>
-
-        <div class="faq-item fade-in">
+        <div class="faq-item reveal">
           <button class="faq-question" onclick="toggleFaq(this)">
             <span>Tenho medo de automatizar errado e quebrar processos.</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              <p>O diagnóstico não automatiza nada. Ele só mapeia, mede e calcula. Você recebe o mapa e o roadmap — o que fazer com eles é inteiramente sua decisão.</p>
-              <p>O Plano de Escala 90 Dias™ prioriza cada automação por três critérios — ROI projetado, facilidade de implementação e risco operacional. Você sabe antes de implementar qualquer coisa o nível de risco envolvido.</p>
-            </div>
-          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            <p>O diagnóstico não automatiza nada. Ele só mapeia, mede e calcula. Você recebe o mapa e o roadmap — o que fazer é sua decisão.</p>
+            <p>O Plano de Escala 90 Dias™ prioriza cada automação por ROI projetado, facilidade de implementação e risco operacional. Nenhuma decisão sem dados na frente.</p>
+          </div></div>
         </div>
-
-        <div class="faq-item fade-in">
+        <div class="faq-item reveal">
           <button class="faq-question" onclick="toggleFaq(this)">
             <span>R$1.500 parece caro para um diagnóstico de 5 dias.</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              <p>Caro em relação a quê? Em relação a continuar operando com R$10.000/mês em processos manuais por mais 12 meses? Isso custa R$120.000.</p>
-              <p>Em relação a contratar um consultor que vai levar 30 dias e cobrar R$15.000 por um fluxograma sem uma linha de ROI?</p>
-              <p>Em relação ao risco: se não encontrarmos R$5.000/mês em perdas, você não paga nada. O risco máximo é zero.</p>
-            </div>
-          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            <p>Caro em relação a quê? Continuar com R$10.000/mês em perdas por 12 meses custa R$120.000.</p>
+            <p>Um consultor que leva 30 dias e cobra R$15.000 por um fluxograma sem ROI? Mais caro e menos útil.</p>
+            <p>Risco: se não encontrarmos R$5.000/mês, você não paga nada. O risco máximo é zero.</p>
+          </div></div>
         </div>
-
-        <div class="faq-item fade-in">
+        <div class="faq-item reveal">
           <button class="faq-question" onclick="toggleFaq(this)">
             <span>Já contratei consultoria antes e não funcionou.</span>
             <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              <p>Maioria das consultorias de processos não funciona para agências de tráfego porque quem a entrega não fala a língua do negócio. Entregam fluxograma sem uma linha de ROI, sem priorização financeira.</p>
-              <p>O ROI-OPS™ entrega número. Custo por processo, ROI de automação, tempo de payback. A mesma linguagem que você usa para justificar qualquer decisão de investimento — aplicada à operação interna.</p>
-              <p>Você vai receber algo que se parece com um relatório de performance, não com um manual de RH.</p>
-            </div>
-          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            <p>Maioria das consultorias não funciona para agências de tráfego porque quem entrega não fala a língua do negócio. Entregam fluxograma sem ROI, sem priorização financeira.</p>
+            <p>O ROI-OPS™ entrega número: custo por processo, ROI de automação, tempo de payback. A mesma linguagem que você usa para justificar investimento — aplicada à operação interna.</p>
+          </div></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ====== FINAL CTA ====== -->
+  <!-- ══════ CTA FINAL ══════ -->
   <section class="cta-section">
-    <div class="container fade-in">
+    <div class="cta-glow"></div>
+    <div class="container reveal" style="position:relative; z-index:1;">
       <span class="section-label">Próximo passo</span>
       <h2 class="section-title">Agende seu Diagnóstico</h2>
       <p>O processo começa com uma call de 30 minutos — sem compromisso. Você sai com o custo real de pelo menos um processo antes de decidir qualquer coisa.</p>
-      <p class="cta-subtext">Se não fizer sentido continuar, você saiu da call com um insight gratuito. Sem custo, sem pressão.</p>
-      <a href="https://calendly.com/seu-link" class="btn-primary">
-        Agendar meu Diagnóstico ROI-OPS
-        <span class="btn-arrow">&rarr;</span>
+      <p class="cta-sub">Se não fizer sentido, você saiu com um insight gratuito. Sem custo, sem pressão.</p>
+      <a href="https://calendly.com/seu-link" class="btn-primary" style="margin-top:16px;">
+        Agendar meu Diagnóstico ROI-OPS <span class="arrow">&rarr;</span>
       </a>
       <br>
-      <span class="cta-limited">Vagas limitadas por mês para garantir a qualidade do diagnóstico.</span>
+      <span class="cta-limited">Vagas limitadas por mês para garantir a qualidade.</span>
     </div>
   </section>
 
-  <!-- ====== FOOTER ====== -->
+  <!-- ══════ FOOTER ══════ -->
   <footer class="footer">
     <div class="container">
-      <div class="footer-logo">ROI<span>-OPS</span>™</div>
+      <div class="footer-logo"><span class="roi">ROI</span><span class="ops">-OPS</span>™</div>
       <div class="footer-tagline">"Sua agência mede tudo. Menos ela mesma."</div>
       <div class="footer-copy">Construído por quem entende CAC, ROAS e LTV.</div>
     </div>
   </footer>
 
-  <!-- ====== JAVASCRIPT ====== -->
+  <!-- ══════════════════════════════════════════
+       JAVASCRIPT
+  ══════════════════════════════════════════ -->
   <script>
-    // ---- Navbar scroll effect ----
+    /* ── Custom Cursor ── */
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.transform = `translate(${mouseX - 5}px, ${mouseY - 5}px)`;
+    });
+
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      ring.style.transform = `translate(${ringX - 18}px, ${ringY - 18}px)`;
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button, .how-card, .num-card, .offer-item, .notforyou-card, .faq-question').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+    });
+
+    /* ── Navbar scroll ── */
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    // ---- FAQ Accordion ----
+    /* ── Dot Grid Canvas (parallax) ── */
+    const canvas = document.getElementById('dotGrid');
+    const ctx = canvas.getContext('2d');
+    let gridMouseX = 0, gridMouseY = 0;
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    document.addEventListener('mousemove', e => {
+      gridMouseX = e.clientX;
+      gridMouseY = e.clientY;
+    });
+
+    function drawGrid() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const spacing = 40;
+      const cols = Math.ceil(canvas.width / spacing) + 2;
+      const rows = Math.ceil(canvas.height / spacing) + 2;
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const x = i * spacing;
+          const y = j * spacing;
+          const dx = gridMouseX - x;
+          const dy = gridMouseY - y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const maxDist = 200;
+          const influence = Math.max(0, 1 - dist / maxDist);
+          const offsetX = dx * influence * 0.02;
+          const offsetY = dy * influence * 0.02;
+          const size = 1 + influence * 1.5;
+          const alpha = 0.15 + influence * 0.5;
+
+          ctx.beginPath();
+          ctx.arc(x + offsetX, y + offsetY, size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(28, 113, 225, ${alpha})`;
+          ctx.fill();
+        }
+      }
+      requestAnimationFrame(drawGrid);
+    }
+    drawGrid();
+
+    /* ── Intersection Observer: reveal + counter ── */
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -60px 0px', threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    /* ── Counter Animation ── */
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.dataset.target);
+          animateCounter(el, target);
+          counterObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
+
+    function animateCounter(el, target) {
+      const duration = 1800;
+      const start = performance.now();
+
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(eased * target);
+        el.textContent = 'R$' + current.toLocaleString('pt-BR');
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    /* ── How section connector ── */
+    const connector = document.getElementById('howConnector');
+    if (connector) {
+      const connectorObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            connector.classList.add('visible');
+            connectorObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      connectorObserver.observe(connector);
+    }
+
+    /* ── FAQ Accordion ── */
     function toggleFaq(btn) {
       const item = btn.parentElement;
       const answer = item.querySelector('.faq-answer');
       const isActive = item.classList.contains('active');
 
-      // Close all
       document.querySelectorAll('.faq-item.active').forEach(el => {
         el.classList.remove('active');
         el.querySelector('.faq-answer').style.maxHeight = '0';
       });
 
-      // Open clicked if it was closed
       if (!isActive) {
         item.classList.add('active');
         answer.style.maxHeight = answer.scrollHeight + 'px';
       }
     }
-
-    // ---- Scroll fade-in (Intersection Observer) ----
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px 0px -60px 0px',
-      threshold: 0.1
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
-
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
   </script>
 
 </body>
