@@ -701,6 +701,221 @@
     .footer-copy { font-size: 0.75rem; color: #444; margin-top: 12px; }
 
     /* ══════════════════════════════════════════
+       CALCULATOR
+    ══════════════════════════════════════════ */
+    .calc-section {
+      padding: var(--section-py) 0;
+      background: var(--bg-alt);
+    }
+    .calc-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 48px;
+      align-items: start;
+    }
+    .calc-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .calc-field label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.9rem;
+      color: var(--text-sec);
+      margin-bottom: 10px;
+    }
+    .calc-field .calc-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--white);
+      font-size: 0.95rem;
+    }
+    .calc-field input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: rgba(30,58,95,0.5);
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+    .calc-field input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--blue);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(28,113,225,0.5);
+      transition: box-shadow 0.2s var(--ease);
+    }
+    .calc-field input[type="range"]::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 20px rgba(28,113,225,0.8);
+    }
+    .calc-field input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--blue);
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(28,113,225,0.5);
+    }
+    .calc-results {
+      padding: 36px;
+      background: rgba(28,113,225,0.04);
+      border: 1px solid rgba(28,113,225,0.25);
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(28,113,225,0.08);
+      position: sticky;
+      top: 100px;
+    }
+    .calc-results h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+    }
+    .calc-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(30,58,95,0.3);
+    }
+    .calc-line:last-of-type { border-bottom: none; }
+    .calc-line-label { font-size: 0.875rem; color: var(--text-sec); }
+    .calc-line-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--red);
+    }
+    .calc-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+      margin: 20px 0;
+      opacity: 0.4;
+    }
+    .calc-total { text-align: center; padding: 20px 0 8px; }
+    .calc-total-label {
+      font-size: 0.8rem; color: var(--text-sec);
+      text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;
+    }
+    .calc-total-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 700; color: var(--red); letter-spacing: -1px;
+    }
+    .calc-annual { text-align: center; padding: 8px 0; }
+    .calc-annual-label {
+      font-size: 0.75rem; color: var(--text-sec);
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .calc-annual-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.3rem; font-weight: 700; color: var(--red); opacity: 0.7;
+    }
+    .calc-savings {
+      margin-top: 16px; padding: 16px;
+      background: rgba(16,185,129,0.06);
+      border: 1px solid rgba(16,185,129,0.2);
+      border-radius: 12px; text-align: center;
+    }
+    .calc-savings-label {
+      font-size: 0.75rem; color: var(--green);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
+    }
+    .calc-savings-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem; font-weight: 700; color: var(--green);
+    }
+    .calc-cta {
+      display: block; width: 100%; margin-top: 24px;
+      padding: 16px; background: var(--blue); color: var(--white);
+      font-size: 0.95rem; font-weight: 700;
+      border: none; border-radius: 10px;
+      text-decoration: none; text-align: center;
+      cursor: none; transition: all 0.3s var(--ease);
+      animation: cta-pulse 2.5s infinite;
+    }
+    .calc-cta:hover {
+      background: var(--blue-hover);
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(28,113,225,0.5);
+    }
+
+    /* ══════════════════════════════════════════
+       FOUNDER / AUTORIDADE
+    ══════════════════════════════════════════ */
+    .founder-section {
+      padding: var(--section-py) 0;
+      background: var(--bg-alt);
+    }
+    .founder-wrapper {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 56px; align-items: start; margin-top: 48px;
+    }
+    .founder-photo-wrap {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 24px;
+    }
+    .founder-photo {
+      width: 200px; height: 200px;
+      border-radius: 50%; object-fit: cover;
+      object-position: center 20%;
+      border: 3px solid var(--blue);
+      box-shadow: 0 0 30px rgba(28,113,225,0.2), 0 0 60px rgba(28,113,225,0.08);
+    }
+    .founder-creds {
+      display: flex; flex-direction: column;
+      gap: 12px; width: 200px;
+    }
+    .founder-cred {
+      padding: 16px;
+      background: rgba(28,113,225,0.04);
+      border: 1px solid rgba(30,58,95,0.5);
+      border-radius: 12px; text-align: center;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s var(--ease);
+    }
+    .founder-cred:hover {
+      transform: translateY(-4px);
+      border-color: var(--blue);
+      box-shadow: 0 4px 20px rgba(28,113,225,0.15);
+    }
+    .founder-cred-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.3rem; font-weight: 700;
+      color: var(--blue); margin-bottom: 4px;
+    }
+    .founder-cred-label { font-size: 0.8rem; color: var(--text-sec); }
+    .founder-text {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .founder-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700; color: var(--white); letter-spacing: -1px;
+    }
+    .founder-subtitle {
+      font-size: 1rem; color: var(--blue);
+      font-weight: 600; margin-top: -8px;
+    }
+    .founder-bio {
+      font-size: 1rem; color: var(--text-sec);
+      line-height: 1.85; margin-top: 8px; max-width: 620px;
+    }
+
+    /* ══════════════════════════════════════════
        RESPONSIVE
     ══════════════════════════════════════════ */
     @media (max-width: 768px) {
@@ -715,6 +930,14 @@
       .pricing-row { grid-template-columns: 1fr; gap: 4px; }
       .pricing-row-cost { text-align: left; }
       .how-connector { display: none; }
+      .calc-wrapper { grid-template-columns: 1fr; }
+      .calc-results { position: static; }
+      .founder-wrapper { grid-template-columns: 1fr; justify-items: center; }
+      .founder-photo-wrap { align-items: center; }
+      .founder-creds { flex-direction: row; width: 100%; gap: 8px; }
+      .founder-cred { flex: 1; }
+      .founder-text { text-align: center; align-items: center; }
+      .founder-bio { text-align: left; }
     }
   </style>
 </head>
@@ -804,6 +1027,69 @@
         <div class="reveal">
           <p>Não é que a agência está quebrando. É que está crescendo com um <span class="text-blue">vazamento silencioso que consome entre 10% e 30% da receita</span> — e que pode ser eliminado em menos de 90 dias.</p>
           <p>Mas só se você souber onde está o vazamento.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ CALCULADORA INTERATIVA ══════ -->
+  <section class="calc-section" id="calculadora">
+    <div class="container">
+      <span class="section-label reveal">Simulador</span>
+      <h2 class="section-title reveal">Calcule quanto sua agência<br><span class="accent">perde por mês</span></h2>
+      <div class="calc-wrapper">
+        <div class="calc-inputs reveal">
+          <div class="calc-field">
+            <label>Pessoas na equipe <span class="calc-val" id="vPessoas">10</span></label>
+            <input type="range" id="sPessoas" min="1" max="50" value="10" oninput="calcUpdate()">
+          </div>
+          <div class="calc-field">
+            <label>Custo m&eacute;dio por hora <span class="calc-val" id="vCusto">R$40</span></label>
+            <input type="range" id="sCusto" min="20" max="150" value="40" oninput="calcUpdate()">
+          </div>
+          <div class="calc-field">
+            <label>Horas/semana em relat&oacute;rios <span class="calc-val" id="vRelat">3h</span></label>
+            <input type="range" id="sRelat" min="0" max="20" value="3" oninput="calcUpdate()">
+          </div>
+          <div class="calc-field">
+            <label>Horas/semana em onboarding <span class="calc-val" id="vOnboard">4h</span></label>
+            <input type="range" id="sOnboard" min="0" max="20" value="4" oninput="calcUpdate()">
+          </div>
+          <div class="calc-field">
+            <label>Horas/semana em follow-up WhatsApp <span class="calc-val" id="vFollow">2h</span></label>
+            <input type="range" id="sFollow" min="0" max="20" value="2" oninput="calcUpdate()">
+          </div>
+        </div>
+        <div class="calc-results reveal">
+          <h3>Seu vazamento operacional</h3>
+          <div class="calc-line">
+            <span class="calc-line-label">Relat&oacute;rios manuais</span>
+            <span class="calc-line-value mono" id="rRelat">R$480</span>
+          </div>
+          <div class="calc-line">
+            <span class="calc-line-label">Onboarding manual</span>
+            <span class="calc-line-value mono" id="rOnboard">R$640</span>
+          </div>
+          <div class="calc-line">
+            <span class="calc-line-label">Follow-up WhatsApp</span>
+            <span class="calc-line-value mono" id="rFollow">R$320</span>
+          </div>
+          <div class="calc-divider"></div>
+          <div class="calc-total">
+            <div class="calc-total-label">Total mensal perdido</div>
+            <div class="calc-total-value" id="rTotal">R$1.440</div>
+          </div>
+          <div class="calc-annual">
+            <div class="calc-annual-label">Perda anual projetada</div>
+            <div class="calc-annual-value" id="rAnual">R$17.280</div>
+          </div>
+          <div class="calc-savings">
+            <div class="calc-savings-label">Economia com ROI-OPS&trade;</div>
+            <div class="calc-savings-value" id="rEconomia">-R$60/m&ecirc;s</div>
+          </div>
+          <a href="https://calendly.com/seu-link" class="calc-cta">
+            Quero recuperar esse dinheiro &rarr;
+          </a>
         </div>
       </div>
     </div>
@@ -1023,6 +1309,39 @@
     </div>
   </section>
 
+  <!-- ══════ AUTORIDADE DO FUNDADOR ══════ -->
+  <section class="founder-section">
+    <div class="container">
+      <span class="section-label reveal">Quem criou</span>
+      <h2 class="section-title reveal">Quem est&aacute; por tr&aacute;s do <span class="accent">ROI-OPS&trade;</span></h2>
+      <div class="founder-wrapper">
+        <div class="founder-photo-wrap reveal">
+          <img src="https://i.ibb.co/xqt27f9d/Whats-App-Image-2026-01-12-at-15-39-07.jpg" alt="Jo&atilde;o Van Lume" class="founder-photo" width="200" height="200" loading="lazy">
+          <div class="founder-creds">
+            <div class="founder-cred">
+              <div class="founder-cred-value">3+</div>
+              <div class="founder-cred-label">Anos em tr&aacute;fego pago</div>
+            </div>
+            <div class="founder-cred">
+              <div class="founder-cred-value">R$5M+</div>
+              <div class="founder-cred-label">Investidos em ads</div>
+            </div>
+            <div class="founder-cred">
+              <div class="founder-cred-value">5 dias</div>
+              <div class="founder-cred-label">Para resultado completo</div>
+            </div>
+          </div>
+        </div>
+        <div class="founder-text reveal">
+          <h3 class="founder-name">Jo&atilde;o Van Lume</h3>
+          <p class="founder-subtitle">Especialista em Tr&aacute;fego Pago &rarr; Criador do ROI-OPS&trade;</p>
+          <p class="founder-bio">Passei anos gerenciando campanhas de tr&aacute;fego pago e aprendendo a calcular o ROI de cada centavo investido em ads. Quando comecei a trabalhar com ag&ecirc;ncias, percebi uma ironia: os melhores especialistas em performance do mercado n&atilde;o tinham ideia de quanto suas pr&oacute;prias opera&ccedil;&otilde;es estavam custando &mdash; e quando buscavam ajuda, encontravam consultores de processos que nunca precisaram justificar um CAC na vida.</p>
+          <p class="founder-bio">Criei o ROI-OPS&trade; para resolver exatamente isso. Um diagn&oacute;stico que fala a l&iacute;ngua de quem vive de m&eacute;tricas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ══════ CTA FINAL ══════ -->
   <section class="cta-section">
     <div class="cta-glow"></div>
@@ -1184,6 +1503,46 @@
       }, { threshold: 0.3 });
       connectorObserver.observe(connector);
     }
+
+    /* ── Calculator ── */
+    function calcUpdate() {
+      const pessoas = parseInt(document.getElementById('sPessoas').value);
+      const custo = parseInt(document.getElementById('sCusto').value);
+      const relat = parseInt(document.getElementById('sRelat').value);
+      const onboard = parseInt(document.getElementById('sOnboard').value);
+      const follow = parseInt(document.getElementById('sFollow').value);
+
+      document.getElementById('vPessoas').textContent = pessoas;
+      document.getElementById('vCusto').textContent = 'R$' + custo;
+      document.getElementById('vRelat').textContent = relat + 'h';
+      document.getElementById('vOnboard').textContent = onboard + 'h';
+      document.getElementById('vFollow').textContent = follow + 'h';
+
+      const cRelat = relat * custo * 4;
+      const cOnboard = onboard * custo * 4;
+      const cFollow = follow * custo * 4;
+      const total = cRelat + cOnboard + cFollow;
+      const anual = total * 12;
+      const economia = total - 1500;
+
+      const fmt = v => 'R$' + Math.abs(v).toLocaleString('pt-BR');
+
+      document.getElementById('rRelat').textContent = fmt(cRelat);
+      document.getElementById('rOnboard').textContent = fmt(cOnboard);
+      document.getElementById('rFollow').textContent = fmt(cFollow);
+      document.getElementById('rTotal').textContent = fmt(total);
+      document.getElementById('rAnual').textContent = fmt(anual);
+
+      const ecoEl = document.getElementById('rEconomia');
+      if (economia > 0) {
+        ecoEl.textContent = '+' + fmt(economia) + '/mes';
+        ecoEl.style.color = '';
+      } else {
+        ecoEl.textContent = '-' + fmt(economia) + '/mes';
+        ecoEl.style.color = 'var(--text-sec)';
+      }
+    }
+    calcUpdate();
 
     /* ── FAQ Accordion ── */
     function toggleFaq(btn) {
