@@ -24,37 +24,78 @@
     }
 
     /* ══════════════════════════════════════════
-       CUSTOM CURSOR
+       CUSTOM CURSOR — Premium Experience
     ══════════════════════════════════════════ */
     .cursor-dot {
-      width: 10px; height: 10px;
-      background: #1C71E1;
+      width: 8px; height: 8px;
+      background: #FFFFFF;
       border-radius: 50%;
       position: fixed;
       top: 0; left: 0;
       pointer-events: none;
       z-index: 99999;
-      transition: transform 0.15s cubic-bezier(0.4,0,0.2,1);
-      mix-blend-mode: screen;
+      transition: width 0.25s var(--ease), height 0.25s var(--ease), background 0.25s var(--ease), opacity 0.25s var(--ease);
+      mix-blend-mode: difference;
+    }
+    .cursor-glow {
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(28,113,225,0.07) 0%, transparent 70%);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 99996;
+      transition: opacity 0.4s var(--ease);
+      opacity: 1;
     }
     .cursor-ring {
-      width: 36px; height: 36px;
-      border: 1.5px solid rgba(28,113,225,0.5);
+      width: 40px; height: 40px;
+      border: 1.5px solid rgba(28,113,225,0.35);
       border-radius: 50%;
       position: fixed;
       top: 0; left: 0;
       pointer-events: none;
       z-index: 99998;
-      transition: transform 0.08s cubic-bezier(0.4,0,0.2,1), width 0.3s, height 0.3s, border-color 0.3s;
+      transition: width 0.35s var(--ease), height 0.35s var(--ease), border-color 0.35s var(--ease), background 0.35s var(--ease), opacity 0.35s var(--ease);
+      backdrop-filter: blur(1px);
+    }
+
+    /* Hover em links/botoes — expande e ganha cor */
+    .cursor-hover .cursor-dot {
+      width: 6px; height: 6px;
+      background: var(--blue);
     }
     .cursor-hover .cursor-ring {
-      width: 50px; height: 50px;
-      border-color: rgba(28,113,225,0.9);
+      width: 56px; height: 56px;
+      border-color: rgba(28,113,225,0.6);
+      background: rgba(28,113,225,0.06);
+    }
+
+    /* Hover em CTAs — efeito magnetico */
+    .cursor-cta .cursor-dot {
+      width: 48px; height: 48px;
+      background: rgba(28,113,225,0.15);
+      border-radius: 50%;
+    }
+    .cursor-cta .cursor-ring {
+      width: 64px; height: 64px;
+      border-color: var(--blue);
+      background: rgba(28,113,225,0.08);
+    }
+
+    /* Hover em texto — muda pra barra */
+    .cursor-text .cursor-dot {
+      width: 3px; height: 24px;
+      border-radius: 2px;
+      background: var(--blue);
+    }
+    .cursor-text .cursor-ring {
+      opacity: 0;
     }
 
     @media (pointer: coarse) {
       body { cursor: auto; }
-      .cursor-dot, .cursor-ring { display: none; }
+      .cursor-dot, .cursor-ring, .cursor-glow { display: none; }
     }
 
     /* ══════════════════════════════════════════
@@ -946,12 +987,13 @@
   <!-- CUSTOM CURSOR -->
   <div class="cursor-dot" id="cursorDot"></div>
   <div class="cursor-ring" id="cursorRing"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
 
   <!-- ══════ NAVBAR ══════ -->
   <nav class="navbar" id="navbar">
     <div class="container">
       <a href="#" class="logo"><span class="roi">ROI</span><span class="ops">-OPS</span>™</a>
-      <a href="https://calendly.com/seu-link" class="nav-cta">
+      <a href="https://calendly.com/vanlume-trafego/30min" class="nav-cta">
         Agendar Diagnóstico <span class="arrow">&rarr;</span>
       </a>
     </div>
@@ -968,11 +1010,11 @@
       <p class="hero-highlight reveal">Em 5 dias úteis, o ROI-OPS™ identifica onde estão seus <span class="accent">R$8.000–R$25.000/mês</span> em perdas operacionais — e quais 3 automações eliminam 80% delas.</p>
       <p class="hero-guarantee reveal">Garantia: se não encontrarmos R$5.000/mês em perdas, devolvemos 100%.</p>
       <div class="hero-buttons reveal">
-        <a href="https://calendly.com/seu-link" class="btn-primary">
+        <a href="https://calendly.com/vanlume-trafego/30min" class="btn-primary">
           Agendar meu Diagnóstico <span class="arrow">&rarr;</span>
         </a>
-        <a href="#numeros" class="btn-secondary">
-          Ver os números <span class="arrow">&darr;</span>
+        <a href="#calculadora" class="btn-secondary">
+          Veja quanto você está perdendo <span class="arrow">&darr;</span>
         </a>
       </div>
     </div>
@@ -1087,7 +1129,7 @@
             <div class="calc-savings-label">Economia com ROI-OPS&trade;</div>
             <div class="calc-savings-value" id="rEconomia">-R$60/m&ecirc;s</div>
           </div>
-          <a href="https://calendly.com/seu-link" class="calc-cta">
+          <a href="https://calendly.com/vanlume-trafego/30min" class="calc-cta">
             Quero recuperar esse dinheiro &rarr;
           </a>
         </div>
@@ -1163,7 +1205,7 @@
           <div class="offer-total-price">R$1.500</div>
           <span class="offer-total-label">Com garantia de R$5.000/mês em perdas identificadas</span>
         </div>
-        <a href="https://calendly.com/seu-link" class="btn-primary">
+        <a href="https://calendly.com/vanlume-trafego/30min" class="btn-primary">
           Agendar Diagnóstico <span class="arrow">&rarr;</span>
         </a>
       </div>
@@ -1350,7 +1392,7 @@
       <h2 class="section-title">Agende seu Diagnóstico</h2>
       <p>O processo começa com uma call de 30 minutos — sem compromisso. Você sai com o custo real de pelo menos um processo antes de decidir qualquer coisa.</p>
       <p class="cta-sub">Se não fizer sentido, você saiu com um insight gratuito. Sem custo, sem pressão.</p>
-      <a href="https://calendly.com/seu-link" class="btn-primary" style="margin-top:16px;">
+      <a href="https://calendly.com/vanlume-trafego/30min" class="btn-primary" style="margin-top:16px;">
         Agendar meu Diagnóstico ROI-OPS <span class="arrow">&rarr;</span>
       </a>
       <br>
@@ -1371,28 +1413,54 @@
        JAVASCRIPT
   ══════════════════════════════════════════ -->
   <script>
-    /* ── Custom Cursor ── */
+    /* ── Custom Cursor — Premium ── */
     const dot = document.getElementById('cursorDot');
     const ring = document.getElementById('cursorRing');
-    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+    const glow = document.getElementById('cursorGlow');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0, glowX = 0, glowY = 0;
 
     document.addEventListener('mousemove', e => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      dot.style.transform = `translate(${mouseX - 5}px, ${mouseY - 5}px)`;
+      const dotW = dot.offsetWidth / 2;
+      const dotH = dot.offsetHeight / 2;
+      dot.style.transform = `translate(${mouseX - dotW}px, ${mouseY - dotH}px)`;
     });
 
     function animateRing() {
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
-      ring.style.transform = `translate(${ringX - 18}px, ${ringY - 18}px)`;
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+      glowX += (mouseX - glowX) * 0.06;
+      glowY += (mouseY - glowY) * 0.06;
+      const ringW = ring.offsetWidth / 2;
+      const ringH = ring.offsetHeight / 2;
+      ring.style.transform = `translate(${ringX - ringW}px, ${ringY - ringH}px)`;
+      glow.style.transform = `translate(${glowX - 100}px, ${glowY - 100}px)`;
       requestAnimationFrame(animateRing);
     }
     animateRing();
 
-    document.querySelectorAll('a, button, .how-card, .num-card, .offer-item, .notforyou-card, .faq-question').forEach(el => {
-      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+    /* Hover states */
+    const removeCursorStates = () => {
+      document.body.classList.remove('cursor-hover', 'cursor-cta', 'cursor-text');
+    };
+
+    // Links e cards — hover normal
+    document.querySelectorAll('a:not(.btn-primary):not(.nav-cta):not(.calc-cta), button, .how-card, .num-card, .offer-item, .notforyou-card, .faq-question, .founder-cred, .calc-field input').forEach(el => {
+      el.addEventListener('mouseenter', () => { removeCursorStates(); document.body.classList.add('cursor-hover'); });
+      el.addEventListener('mouseleave', removeCursorStates);
+    });
+
+    // CTAs — efeito magnetico
+    document.querySelectorAll('.btn-primary, .nav-cta, .calc-cta').forEach(el => {
+      el.addEventListener('mouseenter', () => { removeCursorStates(); document.body.classList.add('cursor-cta'); });
+      el.addEventListener('mouseleave', removeCursorStates);
+    });
+
+    // Texto — cursor barra
+    document.querySelectorAll('p, .hero-sub, .hero-highlight, .pain-content p, .faq-answer p, .founder-bio').forEach(el => {
+      el.addEventListener('mouseenter', () => { removeCursorStates(); document.body.classList.add('cursor-text'); });
+      el.addEventListener('mouseleave', removeCursorStates);
     });
 
     /* ── Navbar scroll ── */
